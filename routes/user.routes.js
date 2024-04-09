@@ -1,6 +1,7 @@
 import express from "express";
 import { isAdminRoute, protectRoute } from "../middlewares/auth.middleware.js";
 import {
+  getNotificationsList,
   getTeamList,
   loginUser,
   logoutUser,
@@ -13,7 +14,7 @@ router.post("/login", loginUser);
 router.post("/logout", logoutUser);
 
 router.get("/get-team", protectRoute, isAdminRoute, getTeamList);
-// router.get("/notifications", protectRoute, getNotificationsList);
+router.get("/notifications", protectRoute, getNotificationsList);
 
 // router.put("/profile", protectRoute, updateUserProfile);
 // router.put("/read-noti", protectRoute, markNotificationRead);
