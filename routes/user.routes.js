@@ -1,6 +1,7 @@
 import express from "express";
 import { isAdminRoute, protectRoute } from "../middlewares/auth.middleware.js";
 import {
+  activateUserProfile,
   changeUserPassword,
   getNotificationsList,
   getTeamList,
@@ -24,9 +25,7 @@ router.put("/read-noti", protectRoute, markNotificationRead);
 router.put("/change-password", protectRoute, changeUserPassword);
 
 // // //   FOR ADMIN ONLY - ADMIN ROUTES
-// router
-//   .route("/:id")
-//   .put(protectRoute, isAdminRoute, activateUserProfile)
-//   .delete(protectRoute, isAdminRoute, deleteUserProfile);
+router.route("/:id").put(protectRoute, isAdminRoute, activateUserProfile);
+// .delete(protectRoute, isAdminRoute, deleteUserProfile);
 
 export default router;
