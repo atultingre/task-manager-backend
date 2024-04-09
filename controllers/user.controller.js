@@ -236,3 +236,18 @@ export const activateUserProfile = async (req, res) => {
     return res.status(400).json({ status: false, message: error.message });
   }
 };
+
+export const deleteUserProfile = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    await User.findByIdAndDelete(id);
+
+    res
+      .status(200)
+      .json({ status: true, message: "User deleted successfully" });
+  } catch (error) {
+    console.log(error);
+    return res.status(400).json({ status: false, message: error.message });
+  }
+};
