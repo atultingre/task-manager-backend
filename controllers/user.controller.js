@@ -1,6 +1,6 @@
 import { response } from "express";
 import User from "../models/user.model.js";
-// import { createJWT } from "../utils/index.js";
+import { createJWT } from "../utils/index.js";
 import Notice from "../models/notification.model.js";
 
 export const registerUser = async (req, res) => {
@@ -36,6 +36,69 @@ export const registerUser = async (req, res) => {
         .status(400)
         .json({ status: false, message: "Invalid user data" });
     }
+  } catch (error) {
+    console.log(error);
+    return res.status(400).json({ status: false, message: error.message });
+  }
+};
+
+export const loginUser = async (req, res) => {
+  try {
+    const { email, password } = req.body;
+
+    const user = await User.findOne({ email });
+
+    if (!user) {
+      return res
+        .status(401)
+        .json({ status: false, message: "Invalid email or password." });
+    }
+
+    if (!user?.isActive) {
+      return res.status(401).json({
+        status: false,
+        message: "User account has been deactivated, contact the administrator",
+      });
+    }
+
+    const isMatch = await user.matchPassword(password);
+
+    if (user && isMatch) {
+      createJWT(res, user._id);
+
+      user.password = undefined;
+
+      res.status(200).json(user);
+    } else {
+      return res
+        .status(401)
+        .json({ status: false, message: "Invalid email or password" });
+    }
+  } catch (error) {
+    console.log(error);
+    return res.status(400).json({ status: false, message: error.message });
+  }
+};
+
+export const logoutUser = async (req, res) => {
+  try {
+    res.cookie("token", "", {
+      htttpOnly: true,
+      expires: new Date(0),
+    });
+
+    res.status(200).json({ message: "Logout successful" });
+  } catch (error) {
+    console.log(error);
+    return res.status(400).json({ status: false, message: error.message });
+  }
+};
+
+export const getTeamList = async (req, res) => {
+  try {
+    const users = await User.find().select("name title role email isActive");
+
+    res.status(200).json(users);
   } catch (error) {
     console.log(error);
     return res.status(400).json({ status: false, message: error.message });
