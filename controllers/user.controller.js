@@ -1,4 +1,3 @@
-import { response } from "express";
 import User from "../models/user.model.js";
 import { createJWT } from "../utils/index.js";
 import Notice from "../models/notification.model.js";
