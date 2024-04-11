@@ -122,3 +122,77 @@ export const postTaskActivity = async (req, res) => {
     return res.status(400).json({ status: false, message: error.message });
   }
 };
+
+export const dashboardStatistics = async (req, res) => {
+  try {
+    const { userId, isAdmin } = req.user;
+
+    const allTasks = isAdmin
+      ? await Task.find({
+          isTrashed: false,
+        })
+          .populate({
+            path: "team",
+            select: "name role title email",
+          })
+          .sort({ _id: -1 })
+      : await Task.find({
+          isTrashed: false,
+          team: { $all: [userId] },
+        })
+          .populate({
+            path: "team",
+            select: "name role title email",
+          })
+          .sort({ _id: -1 });
+
+    const users = await User.find({ isActive: true })
+      .select("name title role isAdmin createdAt")
+      .limit(10)
+      .sort({ _id: -1 });
+
+    //   group task by stage and calculate counts
+    const groupTaskks = allTasks.reduce((result, task) => {
+      const stage = task.stage;
+
+      if (!result[stage]) {
+        result[stage] = 1;
+      } else {
+        result[stage] += 1;
+      }
+
+      return result;
+    }, {});
+
+    // Group tasks by priority
+    const groupData = Object.entries(
+      allTasks.reduce((result, task) => {
+        const { priority } = task;
+
+        result[priority] = (result[priority] || 0) + 1;
+        return result;
+      }, {})
+    ).map(([name, total]) => ({ name, total }));
+
+    // calculate total tasks
+    const totalTasks = allTasks?.length;
+    const last10Task = allTasks?.slice(0, 10);
+
+    const summary = {
+      totalTasks,
+      last10Task,
+      users: isAdmin ? users : [],
+      tasks: groupTaskks,
+      graphData: groupData,
+    };
+
+    res.status(200).json({
+      status: true,
+      message: "Successfully",
+      ...summary,
+    });
+  } catch (error) {
+    console.log(error);
+    return res.status(400).json({ status: false, message: error.message });
+  }
+};
