@@ -1,5 +1,6 @@
 import express from "express";
 import {
+  createSubTask,
   createTask,
   dashboardStatistics,
   duplicateTask,
@@ -19,7 +20,7 @@ router.get("/dashboard", protectRoute, dashboardStatistics);
 router.get("/", protectRoute, getTasks);
 router.get("/:id", protectRoute, getTask);
 
-// router.put("/create-subtask/:id", protectRoute, isAdminRoute, createSubTask);
+router.put("/create-subtask/:id", protectRoute, isAdminRoute, createSubTask);
 // router.put("/update/:id", protectRoute, isAdminRoute, updateTask);
 // router.put("/:id", protectRoute, isAdminRoute, trashTask);
 
