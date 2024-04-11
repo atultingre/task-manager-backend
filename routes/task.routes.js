@@ -7,6 +7,7 @@ import {
   getTask,
   getTasks,
   postTaskActivity,
+  trashTask,
   updateTask,
 } from "../controllers/task.controller.js";
 import { isAdminRoute, protectRoute } from "../middlewares/auth.middleware.js";
@@ -23,7 +24,7 @@ router.get("/:id", protectRoute, getTask);
 
 router.put("/create-subtask/:id", protectRoute, isAdminRoute, createSubTask);
 router.put("/update/:id", protectRoute, isAdminRoute, updateTask);
-// router.put("/:id", protectRoute, isAdminRoute, trashTask);
+router.put("/:id", protectRoute, isAdminRoute, trashTask);
 
 // router.delete(
 //   "/delete-restore/:id?",
