@@ -225,3 +225,27 @@ export const getTasks = async (req, res) => {
     return res.status(400).json({ status: false, message: error.message });
   }
 };
+
+export const getTask = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    const task = await Task.findById(id)
+      .populate({
+        path: "team",
+        select: "name title role email",
+      })
+      .populate({
+        path: "activities.by",
+        select: "name",
+      });
+
+    res.status(200).json({
+      status: true,
+      task,
+    });
+  } catch (error) {
+    console.log(error);
+    return res.status(400).json({ status: false, message: error.message });
+  }
+};

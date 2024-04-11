@@ -3,6 +3,7 @@ import {
   createTask,
   dashboardStatistics,
   duplicateTask,
+  getTask,
   getTasks,
   postTaskActivity,
 } from "../controllers/task.controller.js";
@@ -16,7 +17,7 @@ router.post("/activity/:id", protectRoute, postTaskActivity);
 
 router.get("/dashboard", protectRoute, dashboardStatistics);
 router.get("/", protectRoute, getTasks);
-// router.get("/:id", protectRoute, getTask);
+router.get("/:id", protectRoute, getTask);
 
 // router.put("/create-subtask/:id", protectRoute, isAdminRoute, createSubTask);
 // router.put("/update/:id", protectRoute, isAdminRoute, updateTask);
