@@ -16,17 +16,19 @@ const taskSchema = new Schema(
     },
     activities: [
       {
-        type: String,
-        default: "assigned",
-        enum: [
-          "assigned",
-          "started",
-          "in progress",
-          "bug",
-          "completed",
-          "commented",
-        ],
-        activity: String,
+        type: {
+          type: String,
+          default: "assigned",
+          enum: [
+            "assigned",
+            "started",
+            "in progress",
+            "bug",
+            "completed",
+            "commented",
+          ],
+        },
+        activity: { type: String },
         date: { type: Date, default: new Date() },
         by: { type: Schema.Types.ObjectId, ref: "User" },
       },

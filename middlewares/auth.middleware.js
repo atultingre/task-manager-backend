@@ -1,8 +1,9 @@
+import jwt from "jsonwebtoken";
 import User from "../models/user.model.js";
 
 const protectRoute = async (req, res, next) => {
   try {
-    const token = req.cookie?.token;
+    const token = req.cookies?.token;
 
     if (token) {
       const decodedToken = jwt.verify(token, process.env.JWT_SECRET);
@@ -34,12 +35,10 @@ const isAdminRoute = (req, res, next) => {
   if (req.user && req.user.isAdmin) {
     next();
   } else {
-    return res
-      .status(401)
-      .json({
-        status: false,
-        message: "Not authorized as admin. Try login again.",
-      });
+    return res.status(401).json({
+      status: false,
+      message: "Not authorized as admin. Try login again.",
+    });
   }
 };
 
